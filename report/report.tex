@@ -99,10 +99,42 @@
 \begin{document}
 
   \maketitle
+  \clearpage
+  \tableofcontents
+  \clearpage
 
   \section{Introduzione}
+  In questa sezione verranno presentati brevemente il dataset su cui è stato svolto il lavoro e le tecniche utilizzate per riuscire a dedurre conoscenza dai dati in questione.
   \subsection{Descrizione del Dataset}
-  \subsection{Tecniche utilizzate}	
+  Per produrre il mio elaborato, ho scelto di condurre le operazioni di studio e mining dei dati sul dataset chiamato \textit{Fertility Data Set}.
+  Questo dataset contiene i risultati degli esami di fertilità, effettuati su campioni di seme secondo i criteri dell'Organizzazione Mondiale della Sanità, di 100 uomini, tali esami sono correlati a dati di natura socio-demografica, ambientale e abitudini dei soggetti.
+  Il problema delineato da questo dataset è dunque affrontabile come un problema di classificazione binaria: si deve infatti poter costruire un modello che, dati certi parametri per gli attributi presi in causa, permetta di diagnosticare un potenziale problema di fertilità o meno.
+  Come detto sopra, gli attributi presi in considerazione sono di natura molto diversa tra loro e non banale correlazione per un non esperto del dominio, di seguito vengono riportati gli attributi presenti nel dataset:
+  \begin{itemize}
+  	\item \texttt{Season}:Attributo che rappresenta la stagione in cui è stato svolto l'esame, ha quattro valori possibili, corrispondenti alle stagioni astronomiche dell'anno solare(-1 Primavera, -0.33 Estate, 0.33 Autunno, 1 Inverno)
+  	
+  	\item \texttt{Age}:Attributo che rappresenta l'età dei partecipanti al test, ha dominio compreso tra 0.5(corrispondente a 18 anni) e 1(corrispondente a 36 anni).
+  	
+  	\item \texttt{Childish-disease}:Attributo binario(rappresentato coi valori 0 e 1) che rappresenta la presenza o meno di patologie clinicamente rilevanti(\textit{Varicella, Orecchioni, Morbillo..}) contratte dal paziente durante l'infanzia.
+  
+  	\item \texttt{Trauma}:Attributo binario(rappresentato coi valori 0 e 1) che rappresenta la presenza o meno di traumi/incidenti rilevanti nella storia clinica del paziente.	
+  	
+  	\item \texttt{Surgical Intervantion}:Attributo binario(rappresentato coi valori 0 e 1) che rappresenta la presenza o meno di interventi chirurgici nella storia clinica del paziente.
+  	
+  	\item \texttt{Fever}:Attributo per identificare la presenza o meno di febbri particolarmente alte in relazione ai tre mesi precedenti al test(-1), in un tempo antecedente ai tre mesi(0) oppure mai(1)
+  	
+  	\item \texttt{Alchoolic}:Rappresenta la frequenza del consumo di alcool, diviso in cinque categorie(corrispondenti a 5 valori tra 0.2(Più volte al giorno), 0.4(Una volta al giorno), 0.6(Più volte alla settimana), 0.8(una volta a settimana), 1(molto raramente o mai)).
+  	
+  	\item \texttt{Smoking}:Le abitudini del soggetto rispetto al fumo: fumatore abituale(-1), sporadico(0), non fumatore(1)
+  	
+  	\item \texttt{Sitting}:Quantifica le ore trascorse sedute al giorno dal soggetto in un range compreso tra una (valore corrispondente 0.06) e 16 (valore corrispondente 1).
+  	
+  \end{itemize} 
+
+  \subsection{Tecniche utilizzate}
+  Dato che il dataset presentava un problema di classificazione binaria, diversi classificatori e tecniche potevano essere utilizzate e i loro risultati confrontati tra di loro, al fine di individuare quali fossero i modelli più solidi.\\
+  Per cominciare nella fase di \texttt{preprocessing} ho utilizzato \textit{Istogrammi} e \textit{Grafici di distribuzione}, successivamente per la classificazione vera e propria, ho scelto un classificatore per ciascuna delle tipologie di classificatori viste a lezione, ovvero \texttt{J-48} per \textit{Decision Tree},\texttt{JRIP} per \textit{Rule-Based Classifiers}, \texttt{IBK} per \textit{Lazy Classifiers}, \texttt{Naive Bayes} per i \textit{Classificatori Bayesiani}.
+  Infine per quanto riguarda i multi-classificatori, ho scelto di usare \texttt{Adaboost} per la tipologia di \textit{Boosting}, \texttt{Bagging} per l'omonima tipologia e infine \texttt{Cost-Sensitive Classifier} per ragioni che verranno spiegate nella sezione 2.1
   \section{Analisi dei dati}
   \subsection{Preprocessing}
   \subsection{Decision Tree}
@@ -110,7 +142,7 @@
   \subsection{Classificatori Lazy}
   \subsection{Classificatori Bayesiani}
   \subsection{Multi-Classificatori}
-  \subsubsection{Approccio Cost-Based}
+  \subsubsection{Approccio Cost-Sensitive}
   \subsubsection{Approccio Boosting}
   \subsubsection{Approccio Bagging}
   \section{Conclusioni}
