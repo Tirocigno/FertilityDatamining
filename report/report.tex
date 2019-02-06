@@ -107,13 +107,13 @@
   In questa sezione verranno presentati brevemente il dataset su cui è stato svolto il lavoro e le tecniche utilizzate per riuscire a dedurre conoscenza dai dati in questione.
   \subsection{Descrizione del Dataset}
   Per produrre il mio elaborato, ho scelto di condurre le operazioni di studio e mining dei dati sul dataset chiamato \textit{Fertility Data Set}.
-  Questo dataset contiene i risultati degli esami di fertilità, effettuati su campioni di seme secondo i criteri dell'Organizzazione Mondiale della Sanità, di 100 uomini, tali esami sono correlati a dati di natura socio-demografica, ambientale e abitudini dei soggetti.
-  Il problema delineato da questo dataset è dunque affrontabile come un problema di classificazione binaria: si deve infatti poter costruire un modello che, dati certi parametri per gli attributi presi in causa, permetta di diagnosticare un potenziale problema di fertilità o meno.
-  Come detto sopra, gli attributi presi in considerazione sono di natura molto diversa tra loro e non banale correlazione per un non esperto del dominio, di seguito vengono riportati gli attributi presenti nel dataset:
+  Questo dataset contiene i risultati degli esami di fertilità, effettuati su campioni di seme secondo i criteri dell'Organizzazione Mondiale della Sanità, di 100 uomini; il risultato di questi esami può essere di due tipologie, Normale oppure Alterato, che indica un potenziale problema di sterilità nel paziente. Questi risultati sono correlati all'interno del dataset a dati di natura socio-demografica, ambientale e abitudinaria dei soggetti analizzati. 
+  Il problema delineato è dunque affrontabile come un quesito di  classificazione binaria: si deve infatti poter costruire un modello che, dati certi parametri per gli attributi presi in causa, permetta di diagnosticare un potenziale problema di fertilità o meno.
+  Come detto sopra, gli attributi presi in considerazione sono di natura molto diversa tra loro e non tutti di banale correlazione per un non esperto del dominio al problema della fertilità, di seguito vengono riportati gli attributi presenti nel dataset:
   \begin{itemize}
   	\item \texttt{Season}:Attributo che rappresenta la stagione in cui è stato svolto l'esame, ha quattro valori possibili, corrispondenti alle stagioni astronomiche dell'anno solare(-1 Primavera, -0.33 Estate, 0.33 Autunno, 1 Inverno)
   	
-  	\item \texttt{Age}:Attributo che rappresenta l'età dei partecipanti al test, ha dominio compreso tra 0.5(corrispondente a 18 anni) e 1(corrispondente a 36 anni).
+  	\item \texttt{Age}:Attributo che rappresenta l'età dei partecipanti al test, ha dominio compreso tra 0.5(corrispondente a 18 anni) e 1(36 anni).
   	
   	\item \texttt{Childish-disease}:Attributo binario(rappresentato coi valori 0 e 1) che rappresenta la presenza o meno di patologie clinicamente rilevanti(\textit{Varicella, Orecchioni, Morbillo..}) contratte dal paziente durante l'infanzia.
   
@@ -134,9 +134,56 @@
   \subsection{Tecniche utilizzate}
   Dato che il dataset presentava un problema di classificazione binaria, diversi classificatori e tecniche potevano essere utilizzate e i loro risultati confrontati tra di loro, al fine di individuare quali fossero i modelli più solidi.\\
   Per cominciare nella fase di \texttt{preprocessing} ho utilizzato \textit{Istogrammi} e \textit{Grafici di distribuzione}, successivamente per la classificazione vera e propria, ho scelto un classificatore per ciascuna delle tipologie di classificatori viste a lezione, ovvero \texttt{J-48} per \textit{Decision Tree},\texttt{JRIP} per \textit{Rule-Based Classifiers}, \texttt{IBK} per \textit{Lazy Classifiers}, \texttt{Naive Bayes} per i \textit{Classificatori Bayesiani}.
-  Infine per quanto riguarda i multi-classificatori, ho scelto di usare \texttt{Adaboost} per la tipologia di \textit{Boosting}, \texttt{Bagging} per l'omonima tipologia e infine \texttt{Cost-Sensitive Classifier} per ragioni che verranno spiegate nella sezione 2.1
+  Infine per quanto riguarda i multi-classificatori, ho scelto di usare \texttt{Adaboost} per la tipologia di \textit{Boosting}, \texttt{Bagging} per l'omonima famiglia e infine \texttt{Cost-Sensitive Classifier} per ragioni che verranno spiegate nella sezione 2.
   \section{Analisi dei dati}
+  In questa sezione verrà riportato lo studio effettuato sul dataset, ogni sottosezione tratterà di uno specifico classificatore, dei suoi risultati e degli esperimenti fatti per migliorare il modello.
+  Prima di partire con i vari dati, occorre però stabilire i criteri di misura delle performance dei vari classificatori: a tale scopo ho tenuto conto in primo luogo della \texttt{Confusion Matrix} prodotta da ogni modello, successivamente dei valori di \texttt{Precision} e \texttt{Recall} per le classi in gioco e infine del valore della \texttt{ROC}.
   \subsection{Preprocessing}
+  Durante la fase di preprocessing, ho studiato la composizione dei dati e pensato quali potessero essere le principali tecniche da applicare.
+  La prima cosa che mi è saltata all'occhio all'apertura del dataset è sicuramente la sua sbilanciatezza nelle classi di output: su 100 pazienti in esame, solo 12 risultano compromessi, come mostrato nella figura 1
+  
+  \begin{figure}[h!]
+  	\includegraphics{IstogrammaClassi.png}
+  	\caption{Istogramma delle classi in gioco, la colonna blu rappresenta le diagnosi di fertilità normale, quella rossa gli esami che evidenziano potenziali problematiche}
+  \end{figure}
+
+Questo disequilibrio tra le classi mette in difficoltà i modelli più semplici, costringendomi così a ricercare e mettere alla prova diverse configurazioni parametriche nei modelli da me utilizzati, al fine di ottenere risultati validi.
+Parlando poi degli attributi presenti nel dataset, non ho dovuto fare particolari operazioni di elaborazione o pulizia: tutti i dati si presentavano infatti come composti da attributi numerici,discreti e semi-normalizzati(il \texttt{Range} per ogni attributo variava massimo tra -1 e 1); di conseguenza non ho effettuato operazioni permanenti di \texttt{Discretizzazione, Trasformazione, Selezione di Attributi} o \texttt{Replace dei valori mancanti}, unica trasformazione permanente applicata ai dati è stata la loro \texttt{Normalizzazione} per rendere i range dei vari attributi omogenei tra di loro.
+Non essendo i classificatori applicati particolarmente influenzati dalla \texttt{Normalizzazione} dei dati, fatta eccezione per \texttt{IBK} che richiede tale processo come requisito per il suo funzionamento ottimo, ho utilizzato la versione normalizzata dei dati per la maggior parte dei classificatori, realizzando ogni tanto qualche prova con la loro versione non normalizzata per vedere se c'erano sostanziali differenze.\\
+Parlando poi degli attributi, in totale 10, ho condotto un'analisi sugli istogrammi ottenuti, valutando per ogni attributo il rapporto tra i valori assunti e la classe delle varie istanze considerate.
+
+ \begin{figure}[h!]
+	\includegraphics[scale=0.5]{Istogrammi.png}
+	\caption{Istogramma dei vari attributi in relazione alle classi del dataset}
+\end{figure}
+
+Analizzando gli istogrammi in figura 2, ho tratto le seguenti considerazioni:
+
+\begin{itemize}
+	\item \texttt{Season}:Discretizzando l'attributo su quattro valori corrispondenti alle stagioni, si verifica che per l'autunno sono presenti solo quattro record, inoltre la frequenza di esami con esito problematico tendono ad aumentare leggermente durante estate e inverno, questo potrebbe essere dovuto alle condizioni di forte caldo o gelo tipiche di quelle stagioni.
+	
+	\item \texttt{Age}:Discretizzando l'attributo su 18 valori, si verifica che la distribuzione dei valori non è omogenea, ma tendono a essere molto più frequenti i pazienti con età più vicina a 18 anni che ha 36; particolare attenzione merita però la distribuzione dei pazienti con esame di fertilità problematico: su 12 casi totali di infertilità, più della metà sono collocati nella colonna corrispondente ai 24 anni.\\
+	Sicuramente la minor frequenza di record con età del paziente tendete a 36 anni può aver inciso su una così alta concentrazione di esami problematici in corrispondenza di questo anno, così come ha sicuramente influito la scarsa frequenza nei valori d'età subito precedenti a 24
+	
+	\item \texttt{Childish-disease}:Attributo binario(rappresentato coi valori 0 e 1) che rappresenta la presenza o meno di patologie clinicamente rilevanti(\textit{Varicella, Orecchioni, Morbillo..}) contratte dal paziente durante l'infanzia.
+	
+	\item \texttt{Trauma}:Attributo binario(rappresentato coi valori 0 e 1) che rappresenta la presenza o meno di traumi/incidenti rilevanti nella storia clinica del paziente.	
+	
+	\item \texttt{Surgical Intervantion}:Attributo binario(rappresentato coi valori 0 e 1) che rappresenta la presenza o meno di interventi chirurgici nella storia clinica del paziente.
+	
+	\item \texttt{Fever}:Attributo per identificare la presenza o meno di febbri particolarmente alte in relazione ai tre mesi precedenti al test(-1), in un tempo antecedente ai tre mesi(0) oppure mai(1)
+	
+	\item \texttt{Alchoolic}:Rappresenta la frequenza del consumo di alcool, diviso in cinque categorie(corrispondenti a 5 valori tra 0.2(Più volte al giorno), 0.4(Una volta al giorno), 0.6(Più volte alla settimana), 0.8(una volta a settimana), 1(molto raramente o mai)).
+	
+	\item \texttt{Smoking}:Le abitudini del soggetto rispetto al fumo: fumatore abituale(-1), sporadico(0), non fumatore(1)
+	
+	\item \texttt{Sitting}:Quantifica le ore trascorse sedute al giorno dal soggetto in un range compreso tra una (valore corrispondente 0.06) e 16 (valore corrispondente 1).
+	
+\end{itemize} 
+
+
+  
+  
   \subsection{Decision Tree}
   \subsection{Rule Based Classifier}
   \subsection{Classificatori Lazy}
