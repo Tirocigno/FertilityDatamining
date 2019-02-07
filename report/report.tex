@@ -41,6 +41,8 @@
 \usepackage{xcolor}             % serve per la gestione dei colori nel testo
 \usepackage{graphicx}           % serve per includere immagini e grafici
 
+\usepackage{float}              % Permette di impostare la posizione assoluta delle immagini
+
 \graphicspath{{./fig/}}
 
 \usepackage[%
@@ -142,7 +144,7 @@
   Durante la fase di preprocessing, ho studiato la composizione dei dati e pensato quali potessero essere le principali tecniche da applicare.
   La prima cosa che mi è saltata all'occhio all'apertura del dataset è sicuramente la sua sbilanciatezza nelle classi di output: su 100 pazienti in esame, solo 12 risultano compromessi, come mostrato nella figura 1
   
-  \begin{figure}[h!]
+  \begin{figure}[H]
   	\includegraphics{IstogrammaClassi.png}
   	\caption{Istogramma delle classi in gioco, la colonna blu rappresenta le diagnosi di fertilità normale, quella rossa gli esami che evidenziano potenziali problematiche}
   \end{figure}
@@ -151,33 +153,72 @@ Questo disequilibrio tra le classi mette in difficoltà i modelli più semplici,
 Parlando poi degli attributi presenti nel dataset, non ho dovuto fare particolari operazioni di elaborazione o pulizia: tutti i dati si presentavano infatti come composti da attributi numerici,discreti e semi-normalizzati(il \texttt{Range} per ogni attributo variava massimo tra -1 e 1); di conseguenza non ho effettuato operazioni permanenti di \texttt{Discretizzazione, Trasformazione, Selezione di Attributi} o \texttt{Replace dei valori mancanti}, unica trasformazione permanente applicata ai dati è stata la loro \texttt{Normalizzazione} per rendere i range dei vari attributi omogenei tra di loro.
 Non essendo i classificatori applicati particolarmente influenzati dalla \texttt{Normalizzazione} dei dati, fatta eccezione per \texttt{IBK} che richiede tale processo come requisito per il suo funzionamento ottimo, ho utilizzato la versione normalizzata dei dati per la maggior parte dei classificatori, realizzando ogni tanto qualche prova con la loro versione non normalizzata per vedere se c'erano sostanziali differenze.\\
 Parlando poi degli attributi, in totale 10, ho condotto un'analisi sugli istogrammi ottenuti, valutando per ogni attributo il rapporto tra i valori assunti e la classe delle varie istanze considerate.
-
- \begin{figure}[h!]
-	\includegraphics[scale=0.5]{Istogrammi.png}
-	\caption{Istogramma dei vari attributi in relazione alle classi del dataset}
-\end{figure}
-
-Analizzando gli istogrammi in figura 2, ho tratto le seguenti considerazioni:
+Nella procedura di analisi ho scelto di applicare il filtro \texttt{Discretize} per raggruppare i dati in tanti intervalli quanti i valori distinti assumibili dall'attributo in questione,in modo tale da avere istogrammi più chiari e facilmente interpretabili.
 
 \begin{itemize}
 	\item \texttt{Season}:Discretizzando l'attributo su quattro valori corrispondenti alle stagioni, si verifica che per l'autunno sono presenti solo quattro record, inoltre la frequenza di esami con esito problematico tendono ad aumentare leggermente durante estate e inverno, questo potrebbe essere dovuto alle condizioni di forte caldo o gelo tipiche di quelle stagioni.
+	\begin{figure}[H]
+		\includegraphics[scale=0.9]{IstogrammaStagioni.png}
+		\caption{Istogramma relativo alla distribuzione del dataset sull'attributo \texttt{season}, le quattro colonne rappresentano le stagioni nell'ordine: primavera, estate, autunno, inverno}
+	\end{figure}
 	
-	\item \texttt{Age}:Discretizzando l'attributo su 18 valori, si verifica che la distribuzione dei valori non è omogenea, ma tendono a essere molto più frequenti i pazienti con età più vicina a 18 anni che ha 36; particolare attenzione merita però la distribuzione dei pazienti con esame di fertilità problematico: su 12 casi totali di infertilità, più della metà sono collocati nella colonna corrispondente ai 24 anni.\\
-	Sicuramente la minor frequenza di record con età del paziente tendete a 36 anni può aver inciso su una così alta concentrazione di esami problematici in corrispondenza di questo anno, così come ha sicuramente influito la scarsa frequenza nei valori d'età subito precedenti a 24
+	\item \texttt{Age}:Discretizzando l'attributo su 18 valori, si verifica che la distribuzione non è omogenea, ma tendono a essere molto più frequenti i pazienti con età più vicina a 18 anni che  36; particolare attenzione merita però la distribuzione dei pazienti con esame di fertilità problematico: i casi di infertilità tendono infatti a concentrarsi dopo i 24 anni, con picco proprio sui 24 anni, probabilmente dovuto a una frequenza maggiore di tale valore.
 	
-	\item \texttt{Childish-disease}:Attributo binario(rappresentato coi valori 0 e 1) che rappresenta la presenza o meno di patologie clinicamente rilevanti(\textit{Varicella, Orecchioni, Morbillo..}) contratte dal paziente durante l'infanzia.
+		\begin{figure}[H]
+		\includegraphics[scale=0.9]{IstogrammaEta.png}
+		\caption{Istogramma relativo alla distribuzione del dataset sull'attributo \texttt{age}, le colonne rappresentano ciascuna un'età compresa tra 18 e 36}
+	\end{figure}
 	
-	\item \texttt{Trauma}:Attributo binario(rappresentato coi valori 0 e 1) che rappresenta la presenza o meno di traumi/incidenti rilevanti nella storia clinica del paziente.	
+	\item \texttt{Childish-disease}:I casi di fertilità e infertilità risultano abbastanza bilanciati sulle due colonne dell'istogramma, complice anche uno squilibrio tra , si può supporre che questo dato non sia particolarmente rilevante ai fini di una diagnosi della fertilità. 
 	
-	\item \texttt{Surgical Intervantion}:Attributo binario(rappresentato coi valori 0 e 1) che rappresenta la presenza o meno di interventi chirurgici nella storia clinica del paziente.
+	\begin{figure}[H]
+		\includegraphics[scale=0.9]{IstogrammaMalattieInfantili.png}
+		\caption{Istogramma relativo alla distribuzione del dataset sull'attributo \texttt{childish-desease}, le due colonne rappresentano in ordine i soggetti che hanno contratto malattie importanti da bambini e quelli che non le hanno avute}
+	\end{figure}
 	
-	\item \texttt{Fever}:Attributo per identificare la presenza o meno di febbri particolarmente alte in relazione ai tre mesi precedenti al test(-1), in un tempo antecedente ai tre mesi(0) oppure mai(1)
+	\item \texttt{Trauma}:Considerando una distribuzione abbastanza bilanciata rispetto all'attributo, si può notare che la maggior parte degli esami di fertilità problematici si concentra in corrispondenza di un trauma nella storia clinica(figura 4)	
 	
-	\item \texttt{Alchoolic}:Rappresenta la frequenza del consumo di alcool, diviso in cinque categorie(corrispondenti a 5 valori tra 0.2(Più volte al giorno), 0.4(Una volta al giorno), 0.6(Più volte alla settimana), 0.8(una volta a settimana), 1(molto raramente o mai)).
+		\begin{figure}[H]
+		\includegraphics[scale=0.9]{IstogrammaTrauma.png}
+		\caption{Istogramma relativo alla distribuzione del dataset sull'attributo \texttt{childish-desease}, le due colonne rappresentano in ordine i soggetti che hanno subito traumi da bambini e quelli che non li hanno subiti}
+	\end{figure}
 	
-	\item \texttt{Smoking}:Le abitudini del soggetto rispetto al fumo: fumatore abituale(-1), sporadico(0), non fumatore(1)
+	\item \texttt{Surgical Intervantion}:L'istogramma risulta bilanciato rispetto sia all'attributo, sia alla classe, di conseguenza si può supporre che la presenza di un intervento chirurgico non sia strettamente correlata alla fertilità di un individuo.
 	
-	\item \texttt{Sitting}:Quantifica le ore trascorse sedute al giorno dal soggetto in un range compreso tra una (valore corrispondente 0.06) e 16 (valore corrispondente 1).
+	\begin{figure}[H]
+		\includegraphics[scale=0.9]{IstogrammaInterventoChirurgico.png}
+		\caption{Istogramma relativo alla distribuzione del dataset sull'attributo \texttt{surgical-intervention}, le due colonne rappresentano in ordine i soggetti che hanno subito interventi chirurgici da e quelli mai operati}
+	\end{figure}
+	
+	\item \texttt{Fever}:I dati risultano sbilanciati su questo attributo, con una maggiore frequenza per coloro che hanno avuto un episodio di febbre alta a oltre tre mesi di distanza dall'esame; tale squilibrio può essere considerato normale, visto il criterio di suddivisione applicato all'attributo(febbre registrata entro tre mesi dalla data, oltre tre mesi, mai registrata) risulta naturale che il secondo intervallo(a oltre tre mesi di distanza dall'esame) risulta molto più amplio degli altri due e di conseguenza avrà una frequenza maggiore nei dati.
+	Considerato ciò, la distribuzione degli esami problematici risulta bilanciata tra le colonne dell'istogramma rispetto al numero di elementi per ogni colonna. 
+	
+	\begin{figure}[H]
+		\includegraphics[scale=0.9]{IstogrammaFebbre.png}
+		\caption{Istogramma relativo alla distribuzione sul dataset dell'attributo \texttt{fever}, le tre colonne rappresentano in ordine i soggetti che hanno avuto febbri alte nei tre mesi antecedenti all'esame, oltre tali mesi e infine mai}
+	\end{figure}
+	
+	\item \texttt{Alchoolic}:I dati risultano sbilanciati rispetto a questo attributo con una concentrazione maggiore verso i valori che indicano un raro consumo di alcool. Tra coloro che consumano alcool una o più volte a settimana e quelli che invece si dichiarano astemi, il tasso di esami problematici tende a crescere per la prima categoria rispetto alla seconda, mentre le altre categorie contengono un numero praticamente insignificante di dati, limitando così la loro incidenza.
+	
+		\begin{figure}[H]
+		\includegraphics[scale=0.9]{IstogrammaAlcool.png}
+		\caption{Istogramma relativo alla distribuzione sul dataset dell'attributo \texttt{Alchoolic}, le colonne rappresentano in ordine i soggetti che consumano alcool più volte al giorno, una volta al giorno, più volte a settimana, una volta a settimana, mai}
+	\end{figure}
+	
+	\item \texttt{Smoking}:Rispetto alle abitudini da fumatore del soggetto, i potenziali problemi di sterilità risultano più frequenti negli individui fumatori, occasionali o meno, rispetto ai non fumatori.
+	
+		\begin{figure}[H]
+		\includegraphics[scale=0.9]{IstogrammaFumo.png}
+		\caption{Istogramma relativo alla distribuzione sul dataset dell'attributo \texttt{smoking}, le colonne rappresentano in ordine i non fumatori, gli occasionali, coloro che fumano almeno una volta al giorno}
+	\end{figure}
+	
+	
+	\item \texttt{Sitting}:Dal corrispondente istogramma(figura 10), si deduce che il dataset contenga più dati aventi valori nel range 1-8 rispetto a 8-16; all'interno del primo range gli esami problematici tendono a concentrarsi verso i valori più alti dell'intervallo, si può quindi dedurre che il tempo trascorso seduti al giorno possa influire sui problemi di fertilità
+	
+		\begin{figure}[H]
+		\includegraphics[scale=0.9]{IstogrammaSeduto.png}
+		\caption{Istogramma relativo alla distribuzione sul dataset dell'attributo \texttt{sitting}, le colonne rappresentano in ordine le ore trascorse seduto al giorno dal soggetto, da 1 a 16 compresi}
+	\end{figure}
 	
 \end{itemize} 
 
