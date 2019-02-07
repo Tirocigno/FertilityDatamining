@@ -43,6 +43,8 @@
 
 \usepackage{float}              % Permette di impostare la posizione assoluta delle immagini
 
+\usepackage{listings} 			%Permette di inserire codice nel documento
+
 \graphicspath{{./fig/}}
 
 \usepackage[%
@@ -110,7 +112,7 @@
   \subsection{Descrizione del Dataset}
   Per produrre il mio elaborato, ho scelto di condurre le operazioni di studio e mining dei dati sul dataset chiamato \textit{Fertility Data Set}.
   Questo dataset contiene i risultati degli esami di fertilità, effettuati su campioni di seme secondo i criteri dell'Organizzazione Mondiale della Sanità, di 100 uomini; il risultato di questi esami può essere di due tipologie, Normale oppure Alterato, che indica un potenziale problema di sterilità nel paziente. Questi risultati sono correlati all'interno del dataset a dati di natura socio-demografica, ambientale e abitudinaria dei soggetti analizzati. 
-  Il problema delineato è dunque affrontabile come un quesito di  classificazione binaria: si deve infatti poter costruire un modello che, dati certi parametri per gli attributi presi in causa, permetta di diagnosticare un potenziale problema di fertilità o meno.
+  Il problema delineato è dunque affrontabile come un quesito di  classificazione binaria: si deve infatti poter costruire un modello che, dati certi parametri per gli attributi presi in causa, permetta di prevedere un potenziale problema di fertilità o meno.
   Come detto sopra, gli attributi presi in considerazione sono di natura molto diversa tra loro e non tutti di banale correlazione per un non esperto del dominio al problema della fertilità, di seguito vengono riportati gli attributi presenti nel dataset:
   \begin{itemize}
   	\item \texttt{Season}:Attributo che rappresenta la stagione in cui è stato svolto l'esame, ha quattro valori possibili, corrispondenti alle stagioni astronomiche dell'anno solare(-1 Primavera, -0.33 Estate, 0.33 Autunno, 1 Inverno)
@@ -138,7 +140,7 @@
   Per cominciare nella fase di \texttt{preprocessing} ho utilizzato \textit{Istogrammi} e \textit{Grafici di distribuzione}, successivamente per la classificazione vera e propria, ho scelto un classificatore per ciascuna delle tipologie di classificatori viste a lezione, ovvero \texttt{J-48} per \textit{Decision Tree},\texttt{JRIP} per \textit{Rule-Based Classifiers}, \texttt{IBK} per \textit{Lazy Classifiers}, \texttt{Naive Bayes} per i \textit{Classificatori Bayesiani}.
   Infine per quanto riguarda i multi-classificatori, ho scelto di usare \texttt{Adaboost} per la tipologia di \textit{Boosting}, \texttt{Bagging} per l'omonima famiglia e infine \texttt{Cost-Sensitive Classifier} per ragioni che verranno spiegate nella sezione 2.
   \section{Analisi dei dati}
-  In questa sezione verrà riportato lo studio effettuato sul dataset, ogni sottosezione tratterà di uno specifico classificatore, dei suoi risultati e degli esperimenti fatti per migliorare il modello.
+  In questa sezione verrà riportato lo studio effettuato sul dataset, ogni sottosezione tratterà di uno specifico classificatore, dei suoi risultati e degli esperimenti fatti per migliorarne il modello.
   Prima di partire con i vari dati, occorre però stabilire i criteri di misura delle performance dei vari classificatori: a tale scopo ho tenuto conto in primo luogo della \texttt{Confusion Matrix} prodotta da ogni modello, successivamente dei valori di \texttt{Precision} e \texttt{Recall} per le classi in gioco e infine del valore della \texttt{ROC}.
   \subsection{Preprocessing}
   Durante la fase di preprocessing, ho studiato la composizione dei dati e pensato quali potessero essere le principali tecniche da applicare.
@@ -150,10 +152,10 @@
   \end{figure}
 
 Questo disequilibrio tra le classi mette in difficoltà i modelli più semplici, costringendomi così a ricercare e mettere alla prova diverse configurazioni parametriche nei modelli da me utilizzati, al fine di ottenere risultati validi.
-Parlando poi degli attributi presenti nel dataset, non ho dovuto fare particolari operazioni di elaborazione o pulizia: tutti i dati si presentavano infatti come composti da attributi numerici,discreti e semi-normalizzati(il \texttt{Range} per ogni attributo variava massimo tra -1 e 1); di conseguenza non ho effettuato operazioni permanenti di \texttt{Discretizzazione, Trasformazione, Selezione di Attributi} o \texttt{Replace dei valori mancanti}, unica trasformazione permanente applicata ai dati è stata la loro \texttt{Normalizzazione} per rendere i range dei vari attributi omogenei tra di loro.
-Non essendo i classificatori applicati particolarmente influenzati dalla \texttt{Normalizzazione} dei dati, fatta eccezione per \texttt{IBK} che richiede tale processo come requisito per il suo funzionamento ottimo, ho utilizzato la versione normalizzata dei dati per la maggior parte dei classificatori, realizzando ogni tanto qualche prova con la loro versione non normalizzata per vedere se c'erano sostanziali differenze.\\
+Parlando poi degli attributi presenti nel dataset, non ho dovuto fare particolari operazioni di elaborazione o pulizia: tutti i dati si presentavano infatti come composti da attributi numerici,discreti e semi-normalizzati(il \texttt{Range} per ogni attributo variava massimo tra -1 e 1); di conseguenza non ho effettuato operazioni permanenti di \texttt{Discretizzazione, Trasformazione, Selezione di Attributi} o \texttt{Replace dei valori mancanti}, unica trasformazione permanente applicata ai dati è stata la \texttt{Normalizzazione} per rendere i range dei vari attributi omogenei tra di loro.
+Non essendo i classificatori applicati particolarmente influenzati dalla \texttt{Normalizzazione} dei dati, fatta eccezione per \texttt{IBK} che richiede tale processo come requisito per il suo funzionamento ottimo, ho utilizzato la versione normalizzata dei dati per la maggior parte dei classificatori, realizzando ogni tanto qualche prova con la loro versione non normalizzata per individuare eventuali differenze.\\
 Parlando poi degli attributi, in totale 10, ho condotto un'analisi sugli istogrammi ottenuti, valutando per ogni attributo il rapporto tra i valori assunti e la classe delle varie istanze considerate.
-Nella procedura di analisi ho scelto di applicare il filtro \texttt{Discretize} per raggruppare i dati in tanti intervalli quanti i valori distinti assumibili dall'attributo in questione,in modo tale da avere istogrammi più chiari e facilmente interpretabili.
+Nella procedura di analisi ho scelto di applicare il filtro \texttt{Discretize} per raggruppare i dati in tanti intervalli quanti i valori distinti assumibili dall'attributo in questione,così da avere istogrammi più chiari e facilmente interpretabili.
 
 \begin{itemize}
 	\item \texttt{Season}:Discretizzando l'attributo su quattro valori corrispondenti alle stagioni, si verifica che per l'autunno sono presenti solo quattro record, inoltre la frequenza di esami con esito problematico tendono ad aumentare leggermente durante estate e inverno, questo potrebbe essere dovuto alle condizioni di forte caldo o gelo tipiche di quelle stagioni.
@@ -162,14 +164,14 @@ Nella procedura di analisi ho scelto di applicare il filtro \texttt{Discretize} 
 		\caption{Istogramma relativo alla distribuzione del dataset sull'attributo \texttt{season}, le quattro colonne rappresentano le stagioni nell'ordine: primavera, estate, autunno, inverno}
 	\end{figure}
 	
-	\item \texttt{Age}:Discretizzando l'attributo su 18 valori, si verifica che la distribuzione non è omogenea, ma tendono a essere molto più frequenti i pazienti con età più vicina a 18 anni che  36; particolare attenzione merita però la distribuzione dei pazienti con esame di fertilità problematico: i casi di infertilità tendono infatti a concentrarsi dopo i 24 anni, con picco proprio sui 24 anni, probabilmente dovuto a una frequenza maggiore di tale valore.
+	\item \texttt{Age}:Discretizzando l'attributo su 18 valori, si verifica che la distribuzione non è omogenea, ma tendono a essere molto più frequenti i pazienti con età più vicina a 18 anni che  36; particolare attenzione merita però la distribuzione dei pazienti con esame di fertilità problematico: i casi di infertilità tendono infatti a concentrarsi dopo i 24 anni, con picco proprio su tale anno, probabilmente dovuto a una frequenza maggiore di tale valore.
 	
 		\begin{figure}[H]
 		\includegraphics[scale=0.9]{IstogrammaEta.png}
 		\caption{Istogramma relativo alla distribuzione del dataset sull'attributo \texttt{age}, le colonne rappresentano ciascuna un'età compresa tra 18 e 36}
 	\end{figure}
 	
-	\item \texttt{Childish-disease}:I casi di fertilità e infertilità risultano abbastanza bilanciati sulle due colonne dell'istogramma, complice anche uno squilibrio tra , si può supporre che questo dato non sia particolarmente rilevante ai fini di una diagnosi della fertilità. 
+	\item \texttt{Childish-disease}:I casi di fertilità e infertilità risultano abbastanza bilanciati sulle due colonne dell'istogramma, mentre gli individui affetti da problematiche durante l'infanzia sono molti meno rispetto agli altri; si può supporre quindi che questo attributo non sia particolarmente rilevante ai fini di una diagnosi della fertilità. 
 	
 	\begin{figure}[H]
 		\includegraphics[scale=0.9]{IstogrammaMalattieInfantili.png}
@@ -180,10 +182,10 @@ Nella procedura di analisi ho scelto di applicare il filtro \texttt{Discretize} 
 	
 		\begin{figure}[H]
 		\includegraphics[scale=0.9]{IstogrammaTrauma.png}
-		\caption{Istogramma relativo alla distribuzione del dataset sull'attributo \texttt{childish-desease}, le due colonne rappresentano in ordine i soggetti che hanno subito traumi da bambini e quelli che non li hanno subiti}
+		\caption{Istogramma relativo alla distribuzione del dataset sull'attributo \texttt{trauma}, le due colonne rappresentano in ordine i soggetti che hanno subito traumi da bambini e quelli che non li hanno subiti}
 	\end{figure}
 	
-	\item \texttt{Surgical Intervantion}:L'istogramma risulta bilanciato rispetto sia all'attributo, sia alla classe, di conseguenza si può supporre che la presenza di un intervento chirurgico non sia strettamente correlata alla fertilità di un individuo.
+	\item \texttt{Surgical Intervantion}:L'istogramma risulta bilanciato rispetto sia all'attributo sia alla classe, quindi si può supporre che la presenza di un intervento chirurgico non sia strettamente correlata alla fertilità di un individuo.
 	
 	\begin{figure}[H]
 		\includegraphics[scale=0.9]{IstogrammaInterventoChirurgico.png}
@@ -222,10 +224,36 @@ Nella procedura di analisi ho scelto di applicare il filtro \texttt{Discretize} 
 	
 \end{itemize} 
 
+Dopo aver analizzato i singoli attributi, ho proseguito osservando i grafici di dispersione tra i vari attributi, senza però notare particolari relazioni tra le distribuzioni dei vari dati.
 
   
   
   \subsection{Decision Tree}
+  La prima tecnica di classificazione che ho testato è stata il \texttt{Decision Tree}, in particolare ho scelto di usare l'implementazione \texttt{J-48}, che realizza un albero binario a possono essere applicate tecniche di \texttt{Post pruning} per ridurre le dimensioni dell'albero e l'errore commesso dal classificatore.\\
+  In primo luogo ho provato a generare un modello applicando i parametri standard impostati dall'editor Weka, ottenendo così i risultati riportati in figura 11
+  
+  \begin{figure}[H]
+  	\includegraphics[scale=0.5]{J48DefaultTree.png}
+  	\caption{Output della classificazione con J48 Tree Pruned}
+  \end{figure}
+
+Com'è possibile notare dai dati in figura, il classificatore costruisce un modello poco valido: per quanto l'accuratezza totale, \texttt{Precision}, \texttt{Recall} per la classe \texttt{N} abbiano valori piuttosto alti, i corrispondenti per \texttt{O} risultano tendenti allo 0, inoltre il valore di \texttt{ROC}, indicatore principale della bontà di un modello di classificazione, risulta terribilmente basso. Osservando la \texttt{Confusion Matrix} e la struttura dell'albero costruito, è piuttosto chiaro che il motivo di valori tanto bassi: l'albero infatti è costruito da un'unica foglia i cui valori sono assegnati alla classe N, causando così la situazione sopradescritta.\\
+Ovviamente questo modello non risultava di una qualità soddisfacente, la causa di questo era dovuta sicuramente al \texttt{post pruning}, responsabile di ridurre l'albero di classificazione a singola foglia, tale risultato ho supposto fosse dovuto allo sbilanciamento nella frequenza delle classi.
+Per porre rimedio a questa cosa, ho provato a aumentare e diminuire il parametro \texttt{confidenceFactor}, responsabile di accentuare o smussare le operazioni di pruning; anche però variando questo parametro i risultati ottenuti non sono stati notevolmente differenti dalla versione sopradescritta, l'albero prodotto risultava sempre composto da una sola foglia.
+La situazione è decisamente migliorata nel momento in cui ho provato a disattivare il pruning: questa scelta ha finalmente prodotto un risultato notevolmente differente dai precedenti, nella figura 12  vengono riportati l'albero di classificazione e i risultati ottenuti dal modello così costruito
+
+\begin{figure}[H]
+	\includegraphics[scale=0.6]{J48UnprunedTree.png}
+	\includegraphics[scale=0.5]{J48UnprunedTreeStat.png}
+	\caption{Albero di classificazione e output ottenuto con J48 Unpruned}
+\end{figure}
+Com'è possibile dedurre osservando la \texttt{Confusion Matrix} e \texttt{ROC}, il risultato del classificatore è sicuramente migliore rispetto alla sua versione Pruned, tuttavia il risultato rimane ancora abbastanza insoddisfacente, soprattutto per le istanze della classe O.
+Facendo vari esperimenti con la versione unpruned di J48, ho notato che abbassando il numero minimo di elementi per foglia a 1, il valore di \texttt{Recall} per la classe O e di \texttt{True Positive} si alza ma il valore di \texttt{ROC} e \texttt{Precision} si abbassano.
+Le considerazioni emerse in fondo sono le seguenti: sicuramente il classificatore J48 non garantisce risultati ottimali sopra questo dataset, soprattutto a causa della grande sbilanciatezza tra i dati, tuttavia disattivando il post pruning e abbassando il numero minimo di elementi per foglia a 1, si può classificare correttamente poco meno della metà degli elementi appartenente a O, classe più difficile da individuare ma allo stesso tempo più rilevante rispetto al dominio dei dati del sistema.
+  
+  
+ 
+  
   \subsection{Rule Based Classifier}
   \subsection{Classificatori Lazy}
   \subsection{Classificatori Bayesiani}
