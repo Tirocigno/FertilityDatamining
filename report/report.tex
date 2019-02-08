@@ -142,6 +142,7 @@
   \section{Analisi dei dati}
   In questa sezione verrà riportato lo studio effettuato sul dataset, ogni sottosezione tratterà di uno specifico classificatore, dei suoi risultati e degli esperimenti fatti per migliorarne il modello.
   Prima di partire con i vari dati, occorre però stabilire i criteri di misura delle performance dei vari classificatori: a tale scopo ho tenuto conto in primo luogo della \texttt{Confusion Matrix} prodotta da ogni modello, successivamente dei valori di \texttt{Precision} e \texttt{Recall} per le classi in gioco e infine del valore della \texttt{ROC}.
+  Come modalità di test ho scelto di applicare in ogni situazione la \texttt{K-Fold Cross-Validation} piuttosto che lo splitting statico dei dati in \texttt{Training} e \texttt{Test Set}, la motivazione dietro a questa scelta è l'esiguo numero di dati presenti nel dataset a cui si presta meglio una modalità come il \texttt{K-Fold Cross-Validation}, in quanto pensata appositamente per dataset di piccole dimensioni.
   \subsection{Preprocessing}
   Durante la fase di preprocessing, ho studiato la composizione dei dati e pensato quali potessero essere le principali tecniche da applicare.
   La prima cosa che mi è saltata all'occhio all'apertura del dataset è sicuramente la sua sbilanciatezza nelle classi di output: su 100 pazienti in esame, solo 12 risultano compromessi, come mostrato nella figura 1
@@ -251,16 +252,84 @@ Com'è possibile dedurre osservando la \texttt{Confusion Matrix} e \texttt{ROC},
 Facendo vari esperimenti con la versione unpruned di J48, ho notato che abbassando il numero minimo di elementi per foglia a 1, il valore di \texttt{Recall} per la classe O e di \texttt{True Positive} si alza ma il valore di \texttt{ROC} e \texttt{Precision} si abbassano.
 Le considerazioni emerse in fondo sono le seguenti: sicuramente il classificatore J48 non garantisce risultati ottimali sopra questo dataset, soprattutto a causa della grande sbilanciatezza tra i dati, tuttavia disattivando il post pruning e abbassando il numero minimo di elementi per foglia a 1, si può classificare correttamente poco meno della metà degli elementi appartenente a O, classe più difficile da individuare ma allo stesso tempo più rilevante rispetto al dominio dei dati del sistema.
   
-  
- 
-  
-  \subsection{Rule Based Classifier}
-  \subsection{Classificatori Lazy}
   \subsection{Classificatori Bayesiani}
+  Per tentare un approccio diverso dai precedenti, ho provato a costruire un modello basato sui classificatori bayesiani, approccio che ignora le relazioni tra gli attributi in favore della frequenza di certi valori rispetto alle classi in gioco.
+  Il classificatore specifico scelto per il dataset è stato \texttt{NaiveBayes} nella sua implementazione fornita da Weka; costruendo il modello utilizzando i parametri standard impostati da Weka, ho ottenuto i seguenti risultati, mostrati in figura 13:
+  
+  \begin{figure}[H]
+  	\includegraphics[scale=0.6]{NaiveBayesOutput.png}
+  	\caption{Output del classificatore Naive Bayes}
+  \end{figure}
+
+Analizzando i risultati di questo classificatore, si possono fare diverse considerazioni: partendo dall'osservazione della \texttt{Confusion Matrix} è possibile vedere come tutti i dati vengano assegnati alla classe "N", mentre "O" rimane vuota, ciò è ulteriormente confermato dai valori di \texttt{Precision} e \texttt{Recall} per la classe "O", che risultano rispettivamente non calcolata e 0, infine osservando \texttt{R.O.C} si ha la conferma definitiva che il modello costruito sia decisamente inefficiente e poco performante.
+Le ragioni dietro alla poca efficienza del modello Bayesiano per questo problema possono essere ricondotte alla mancanza dei valori di distribuzione delle probabilità reali per le classi e alla potenziale mancanza di indipendenza statistica tra attributi; questi fattori, combinati allo sbilanciamento dei dati nel dataset, da cui vengono estratte le distribuzioni di probabilità necessarie al classificatore in mancanza di quelle reali, rendono inefficace il modello bayesiano su questo dataset. 
+
+  \subsection{Classificatori Lazy}
+  Ultima famiglia da me utilizzata è stata quella dei classificatori \texttt{Instance-Based} o Lazy che dir si voglia, la particolarità di queste tecniche è la totale assenza di modello, sostituito da procedure di natura induttiva.
+  Tra tutti i classificatori disponibili in questa famiglia, ho scelto di utilizzare \texttt{IBK}, implementazione in Weka dell'algoritmo KNN; per questo classificatore è possibile impostare diversi parametri come il numero di vicini da considerare e la metrica da utilizzare nel calcolo della distanza.
+  Applicando i parametri default di Weka, ovvero un vicino e distanza euclidea, si ottengono i risultati descritti in figura 14
+  
+  \begin{figure}[H]
+  	\includegraphics[scale=0.6]{IB1Output.png}
+  	\caption{Output del classificatore IBK con K=1 e distanza Euclidea}
+  \end{figure}
+
+I risultati ottenuti da questo modello risultano non particolarmente buoni, tuttavia i valori di \texttt{Confusion Matrix}, \texttt{R.O.C}, \texttt{Precision} e \texttt{Recall} per la classe "0" sono comunque discreti rispetto a quelli ottenuti nei tentativi precedenti, lasciando intendere che il modello possa essere migliorato utilizzando valori differenti per i parametri sopradescritti.\\
+Mantenendo la distanza euclidea come metrica, ho provato a variare il valore di K tra i numeri dispari compresi tra 3 e 11, ottenendo con K = 5 la massimissazione del valore di \texttt{R.O.C}(figura 15) mentre per K = 3 i massimi valori di \texttt{Precision} e \texttt{Recall} della classe "O"(figura 16).
+
+\begin{figure}[H]
+	\includegraphics[scale=0.6]{IB5Output.png}
+	\caption{Output del classificatore IBK con K=5 e distanza Euclidea}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[scale=0.6]{IB3Output.png}
+	\caption{Output del classificatore IBK con K=3 e distanza Euclidea}
+\end{figure}
+
+Cambiando il numero dei vicini da considerare i risultati cambiano leggermente, tuttavia il modello arranca ancora nel riconoscimento degli elementi della classe "O", le ragioni di questo comportamento sono sicuramente non solo lo sbilanciamento nelle classi di output ma anche la mancanza di una separazione netta tra i dati a livello di valori degli attributi.\\
+Non avendo ottenuto risultati soddisfacenti alterando il numero dei vicini, ho provato a concentrarmi sul cambio di metrica per misurare la distanza tra punti, ovvero i dati nello spazio: tra tutte le metriche messe a disposizione da Weka, la distanza di Chebyshev, che misura la distanza tra due vettori come la maggiore tra le differenze dei singoli attributi, ha ottenuto i risultati migliori migliorando i valori ottenuti con la distanza euclidea sia per K = 3(figura 17) che per K = 5(figura 18).
+
+\begin{figure}[H]
+	\includegraphics[scale=0.6]{IB3Chernobil.png}
+	\caption{Output del classificatore IBK con K=3 e distanza di Chebyshev}
+\end{figure} 
+
+\begin{figure}[H]
+	\includegraphics[scale=0.6]{IB5Chernobil.png}
+	\caption{Output del classificatore IBK con K=5 e distanza di Chebyshev}
+\end{figure} 
+
+Il miglioramento dovuto al cambio di metrica può dipendere dal fatto che mentre la distanza euclidea, basata su tutte le componenti del vettore, ergo gli attributi, produca una vicinanza significativa tra elementi di classe "N" e "O" portando così a errori di classificazione, la distanza di Chebyshev riesca a separare meglio i dati delle due classi considerando solo l'attributo per cui la distanza è massima, quindi aumentando la distanza tra i punti.
+  
   \subsection{Multi-Classificatori}
+Non avendo trovato un modello particolarmente efficace con i tentativi fatti con i classificatori precedentemente descritti, ho deciso di cambiare approccio e di provare i modelli a multi-classificatori, da molti descritti come particolarmente efficaci per i problemi in cui i classificatori semplici  facevano fatica a raggiungere performance accettabili.
+Tra le varie possibilità messe a disposizione da Weka, ho scelto di utilizzare due diversi algoritmi: \texttt{Cost-Sensitive Classifier}, modello che permette di gestire dataset sbilanciati in partenza per distribuzioni delle classi e \texttt{Adaboost}, classificatore appartenente alla famiglia delle tecniche di \texttt{Boosting}
   \subsubsection{Approccio Cost-Sensitive}
+  I Classificatori \texttt{Cost-Sensitive} sono uno degli strumenti più efficaci per gestire dataset non bilanciati, consentono infatti di poter attribuire un peso alle istanze sbagliate delle varie classi in gioco, eseguendo così una procedura di \texttt{Model Tuning}.\\
+  L'implementazione messa a disposizione da Weka permette di selezionare un classificatore su cui costruire il modello, i cui parametri possono essere settati a piacere, e una matrice di costo di dimensione N X N(dove N è il numero delle classi in gioco), dove è possibile assegnare una penalità differente alle varie istanze classificate per ogni classe.
+  Il primo classificatore che ho testato è stato \texttt{J-48} specificando vari valori per la matrice di costo(che di volta in volta accrescevano la penalità dovuta all'errata classificazione di elementi di classe "N" come elementi di classe "O"): al crescere del peso aumentavano sia il numero di istanze classificate correttamente come classe "O", sia quelle appartenenti alla classe "O" assegnate a "N".
+  Questa tendenza è assolutamente in linea con il principio di funzionamento dei classificatori \texttt{Cost-Based}: un buon equilibrio si può trovare attorno a una penalità di valore circa 20, che garantisce \texttt{R.O.C} massima(figura 19).
+  
+  \begin{figure}[H]
+  	\includegraphics[scale=0.6]{CostBased20J48.png}
+  	\caption{Output del classificatore Cost based, basato su un J48 unpruned, con penalità per errori su classe "O" pari a 20 }
+  \end{figure} 
+
+Cambiando classificatore di base in \texttt{Naive Bayes}, i risultati migliorano rispetto alla versione normale del classificatore di Bayes, tuttavia le performance rimangono inferiori rispetto al modello costruito con J48; probabilmente l'approccio \texttt{Cost-Based} migliora l'efficacia del modello \texttt{NaiveBayes}, tuttavia le problematiche espresse nella sezione 2.3 sono talmente importanti da non rendere il classificatore valido nemmeno in questa casistica.\\
+Per ultimo ho lasciato \texttt{IBK}, classificatore con cui avevo ottenuto i migliori risultati nelle sezioni precedenti. Applicando i modelli descritti nella sezione 2.4, ho ottenuto alcuni risultati decisamente validi: il miglior risultato in assoluto è stato ottenuto utilizzando K = 5, distanza euclidea e penalità per i record mal classificati di "O" uguale a 5(figura 20). 
+
+\begin{figure}[H]
+	\includegraphics[scale=0.6]{KKK.png}
+	\caption{Output del classificatore Cost based, basato su IBK con K = 5, con penalità per errori su classe "O" pari a 5.0}
+\end{figure} 
+
+Osservando la \texttt{Confusion Matrix}, si può notare che questo classificatore abbia il più alto numero di veri positivi mai classificati per la classe "O", a discapito però di un elevato numero di istanze di "N" classificate come elementi di "O"; nonostante questo i valori di \texttt{R.O.C} e delle altre metriche considerate risultano in media superiori a qualunque altro modello testato. 
+I buoni risultati ottenuti da questo classificatori sono dovuti all'applicazione a un modello già superiore agli altri in termini di performance sul dataset, ovvero IBK, di un insieme di tecniche per ridurre l'impatto della sbilanciatezza dei dati nelle classi, creando così un modello che nel complesso risulta abbastanza valido e funzionale.
+
   \subsubsection{Approccio Boosting}
-  \subsubsection{Approccio Bagging}
+Ultimo approccio in assoluto che ho tentato è stato il boosting, processo che si basa sulla costruzione di più classificatori attribuendo ogni volta un peso maggiore agli elementi mal classificati al passo precedente.
+Come per i classificatori cost-based, anche qui è possibile specificare un modello di base per costruire la classificazione e sempre analogamente ho testato tutti e tre i classificatori base impiegati ai passi precedenti(\texttt{NaiveBayes, J48} e \texttt{IBK})  
   \section{Conclusioni}
   
 \end{document}
