@@ -108,7 +108,7 @@
   \clearpage
 
   \section{Introduzione}
-  In questa sezione verranno presentati brevemente il dataset su cui è stato svolto il lavoro e le tecniche utilizzate per riuscire a dedurre conoscenza dai dati in questione.
+  In questa sezione verranno presentati brevemente il dataset su cui ho svolto il lavoro e le tecniche utilizzate per riuscire a dedurre conoscenza dai dati in questione.
   \subsection{Descrizione del Dataset}
   Per produrre il mio elaborato, ho scelto di condurre le operazioni di studio e mining dei dati sul dataset chiamato \textit{Fertility Data Set}.
   Questo dataset contiene i risultati degli esami di fertilità, effettuati su campioni di seme secondo i criteri dell'Organizzazione Mondiale della Sanità, di 100 uomini; il risultato di questi esami può essere di due tipologie, Normale oppure Alterato, che indica un potenziale problema di sterilità nel paziente. Questi risultati sono correlati all'interno del dataset a dati di natura socio-demografica, ambientale e abitudinaria dei soggetti analizzati. 
@@ -137,11 +137,11 @@
 
   \subsection{Tecniche utilizzate}
   Dato che il dataset presentava un problema di classificazione binaria, diversi classificatori e tecniche potevano essere utilizzate e i loro risultati confrontati tra di loro, al fine di individuare quali fossero i modelli più solidi.\\
-  Per cominciare nella fase di \texttt{preprocessing} ho utilizzato \textit{Istogrammi} e \textit{Grafici di distribuzione}, successivamente per la classificazione vera e propria, ho scelto un classificatore per ciascuna delle tipologie di classificatori viste a lezione, ovvero \texttt{J-48} per \textit{Decision Tree},\texttt{JRIP} per \textit{Rule-Based Classifiers}, \texttt{IBK} per \textit{Lazy Classifiers}, \texttt{Naive Bayes} per i \textit{Classificatori Bayesiani}.
-  Infine per quanto riguarda i multi-classificatori, ho scelto di usare \texttt{Adaboost} per la tipologia di \textit{Boosting}, \texttt{Bagging} per l'omonima famiglia e infine \texttt{Cost-Sensitive Classifier} per ragioni che verranno spiegate nella sezione 2.
+  Per cominciare nella fase di \texttt{preprocessing} ho utilizzato principalmente la visualizzazione a \textit{Istogrammi}, successivamente per la classificazione vera e propria, ho scelto un classificatore per ciascuna delle tipologie di classificatori viste a lezione, ovvero \texttt{J-48} per \textit{Decision Tree}, \texttt{IBK} per \textit{Lazy Classifiers}, \texttt{Naive Bayes} per i \textit{Classificatori Bayesiani}.
+  Infine per quanto riguarda i multi-classificatori, ho scelto di usare \texttt{Adaboost} per la tipologia di \textit{Boosting} e \texttt{Cost-Sensitive Classifier} per ragioni che verranno spiegate nella sezione 2.
   \section{Analisi dei dati}
   In questa sezione verrà riportato lo studio effettuato sul dataset, ogni sottosezione tratterà di uno specifico classificatore, dei suoi risultati e degli esperimenti fatti per migliorarne il modello.
-  Prima di partire con i vari dati, occorre però stabilire i criteri di misura delle performance dei vari classificatori: a tale scopo ho tenuto conto in primo luogo della \texttt{Confusion Matrix} prodotta da ogni modello, successivamente dei valori di \texttt{Precision} e \texttt{Recall} per le classi in gioco e infine del valore della \texttt{ROC}.
+  Prima di partire con i vari dati, occorre però stabilire i criteri di misura delle performance dei vari classificatori: a tale scopo ho tenuto conto in primo luogo della \texttt{Confusion Matrix} prodotta da ogni modello, successivamente dei valori di \texttt{Precision} e \texttt{Recall} per le classi in gioco, attribuendo un maggiore peso ai valori relativi alla classe "O" rispetto a "N" e infine del valore della \texttt{ROC}.
   Come modalità di test ho scelto di applicare in ogni situazione la \texttt{K-Fold Cross-Validation} piuttosto che lo splitting statico dei dati in \texttt{Training} e \texttt{Test Set}, la motivazione dietro a questa scelta è l'esiguo numero di dati presenti nel dataset a cui si presta meglio una modalità come il \texttt{K-Fold Cross-Validation}, in quanto pensata appositamente per dataset di piccole dimensioni.
   \subsection{Preprocessing}
   Durante la fase di preprocessing, ho studiato la composizione dei dati e pensato quali potessero essere le principali tecniche da applicare.
@@ -149,10 +149,10 @@
   
   \begin{figure}[H]
   	\includegraphics{IstogrammaClassi.png}
-  	\caption{Istogramma delle classi in gioco, la colonna blu rappresenta le diagnosi di fertilità normale, quella rossa gli esami che evidenziano potenziali problematiche}
+  	\caption{Istogramma delle classi in gioco, la colonna blu rappresenta le diagnosi di fertilità normale("N"), quella rossa gli esami che evidenziano potenziali problematiche("O")}
   \end{figure}
 
-Questo disequilibrio tra le classi mette in difficoltà i modelli più semplici, costringendomi così a ricercare e mettere alla prova diverse configurazioni parametriche nei modelli da me utilizzati, al fine di ottenere risultati validi.
+Questo disequilibrio tra le classi mette in difficoltà i modelli più semplici, costringendomi così a ricercare e mettere alla prova diverse configurazioni parametriche al fine di ottenere risultati validi.
 Parlando poi degli attributi presenti nel dataset, non ho dovuto fare particolari operazioni di elaborazione o pulizia: tutti i dati si presentavano infatti come composti da attributi numerici,discreti e semi-normalizzati(il \texttt{Range} per ogni attributo variava massimo tra -1 e 1); di conseguenza non ho effettuato operazioni permanenti di \texttt{Discretizzazione, Trasformazione, Selezione di Attributi} o \texttt{Replace dei valori mancanti}, unica trasformazione permanente applicata ai dati è stata la \texttt{Normalizzazione} per rendere i range dei vari attributi omogenei tra di loro.
 Non essendo i classificatori applicati particolarmente influenzati dalla \texttt{Normalizzazione} dei dati, fatta eccezione per \texttt{IBK} che richiede tale processo come requisito per il suo funzionamento ottimo, ho utilizzato la versione normalizzata dei dati per la maggior parte dei classificatori, realizzando ogni tanto qualche prova con la loro versione non normalizzata per individuare eventuali differenze.\\
 Parlando poi degli attributi, in totale 10, ho condotto un'analisi sugli istogrammi ottenuti, valutando per ogni attributo il rapporto tra i valori assunti e la classe delle varie istanze considerate.
@@ -238,9 +238,9 @@ Dopo aver analizzato i singoli attributi, ho proseguito osservando i grafici di 
   	\caption{Output della classificazione con J48 Tree Pruned}
   \end{figure}
 
-Com'è possibile notare dai dati in figura, il classificatore costruisce un modello poco valido: per quanto l'accuratezza totale, \texttt{Precision}, \texttt{Recall} per la classe \texttt{N} abbiano valori piuttosto alti, i corrispondenti per \texttt{O} risultano tendenti allo 0, inoltre il valore di \texttt{ROC}, indicatore principale della bontà di un modello di classificazione, risulta terribilmente basso. Osservando la \texttt{Confusion Matrix} e la struttura dell'albero costruito, è piuttosto chiaro che il motivo di valori tanto bassi: l'albero infatti è costruito da un'unica foglia i cui valori sono assegnati alla classe N, causando così la situazione sopradescritta.\\
-Ovviamente questo modello non risultava di una qualità soddisfacente, la causa di questo era dovuta sicuramente al \texttt{post pruning}, responsabile di ridurre l'albero di classificazione a singola foglia, tale risultato ho supposto fosse dovuto allo sbilanciamento nella frequenza delle classi.
-Per porre rimedio a questa cosa, ho provato a aumentare e diminuire il parametro \texttt{confidenceFactor}, responsabile di accentuare o smussare le operazioni di pruning; anche però variando questo parametro i risultati ottenuti non sono stati notevolmente differenti dalla versione sopradescritta, l'albero prodotto risultava sempre composto da una sola foglia.
+Com'è possibile notare dai dati in figura, il classificatore costruisce un modello poco valido: per quanto l'accuratezza totale, \texttt{Precision}, \texttt{Recall} per la classe "N" abbiano valori piuttosto alti, i corrispondenti per "O" risultano tendenti a 0, inoltre il valore di \texttt{ROC}, indicatore principale della bontà di un modello di classificazione, risulta terribilmente basso. Osservando la \texttt{Confusion Matrix} e la struttura dell'albero costruito, è piuttosto chiaro che il motivo di valori tanto bassi: l'albero infatti è costruito da un'unica foglia i cui valori sono assegnati alla classe "N", causando così la situazione sopradescritta.\\
+Ovviamente questo modello non risultava di una qualità soddisfacente, la causa di ciò era dovuta sicuramente al \texttt{post pruning}, responsabile di ridurre l'albero di classificazione a singola foglia,  probabilmente a causa dello sbilanciamento nella frequenza delle classi.
+Per porre rimedio a questa cosa, ho provato a aumentare e diminuire il parametro \texttt{confidenceFactor}, responsabile di accentuare o smussare le operazioni di pruning; anche però variando questo parametro i risultati ottenuti non sono stati notevolmente differenti da quanto descritto sopra, l'albero prodotto infatti risultava sempre composto da una sola foglia.
 La situazione è decisamente migliorata nel momento in cui ho provato a disattivare il pruning: questa scelta ha finalmente prodotto un risultato notevolmente differente dai precedenti, nella figura 12  vengono riportati l'albero di classificazione e i risultati ottenuti dal modello così costruito
 
 \begin{figure}[H]
@@ -248,9 +248,9 @@ La situazione è decisamente migliorata nel momento in cui ho provato a disattiv
 	\includegraphics[scale=0.5]{J48UnprunedTreeStat.png}
 	\caption{Albero di classificazione e output ottenuto con J48 Unpruned}
 \end{figure}
-Com'è possibile dedurre osservando la \texttt{Confusion Matrix} e \texttt{ROC}, il risultato del classificatore è sicuramente migliore rispetto alla sua versione Pruned, tuttavia il risultato rimane ancora abbastanza insoddisfacente, soprattutto per le istanze della classe O.
-Facendo vari esperimenti con la versione unpruned di J48, ho notato che abbassando il numero minimo di elementi per foglia a 1, il valore di \texttt{Recall} per la classe O e di \texttt{True Positive} si alza ma il valore di \texttt{ROC} e \texttt{Precision} si abbassano.
-Le considerazioni emerse in fondo sono le seguenti: sicuramente il classificatore J48 non garantisce risultati ottimali sopra questo dataset, soprattutto a causa della grande sbilanciatezza tra i dati, tuttavia disattivando il post pruning e abbassando il numero minimo di elementi per foglia a 1, si può classificare correttamente poco meno della metà degli elementi appartenente a O, classe più difficile da individuare ma allo stesso tempo più rilevante rispetto al dominio dei dati del sistema.
+Com'è possibile dedurre osservando la \texttt{Confusion Matrix} e \texttt{ROC}, il risultato del classificatore è sicuramente migliore rispetto alla sua versione Pruned, tuttavia il risultato rimane ancora abbastanza insoddisfacente, soprattutto per le istanze della classe "O".
+Facendo vari esperimenti con la versione unpruned di J48, ho notato che abbassando il numero minimo di elementi per foglia a 1, il valore di \texttt{Recall} per la classe O e di \texttt{True Positive} si alzava ma il valore di \texttt{ROC} e \texttt{Precision} si abbassavano.
+Le considerazioni emerse alla luce di queste prove sono le seguenti: sicuramente il classificatore J48 non garantisce risultati ottimali sopra questo dataset, soprattutto a causa della grande sbilanciatezza tra i dati, tuttavia disattivando il post pruning e abbassando il numero minimo di elementi per foglia a 1, si può classificare correttamente poco meno della metà degli elementi appartenente a O, classe più difficile da individuare ma allo stesso tempo più rilevante rispetto al dominio dei dati del sistema.
   
   \subsection{Classificatori Bayesiani}
   Per tentare un approccio diverso dai precedenti, ho provato a costruire un modello basato sui classificatori bayesiani, approccio che ignora le relazioni tra gli attributi in favore della frequenza di certi valori rispetto alle classi in gioco.
@@ -309,7 +309,7 @@ Tra le varie possibilità messe a disposizione da Weka, ho scelto di utilizzare 
   I Classificatori \texttt{Cost-Sensitive} sono uno degli strumenti più efficaci per gestire dataset non bilanciati, consentono infatti di poter attribuire un peso alle istanze sbagliate delle varie classi in gioco, eseguendo così una procedura di \texttt{Model Tuning}.\\
   L'implementazione messa a disposizione da Weka permette di selezionare un classificatore su cui costruire il modello, i cui parametri possono essere settati a piacere, e una matrice di costo di dimensione N X N(dove N è il numero delle classi in gioco), dove è possibile assegnare una penalità differente alle varie istanze classificate per ogni classe.
   Il primo classificatore che ho testato è stato \texttt{J-48} specificando vari valori per la matrice di costo(che di volta in volta accrescevano la penalità dovuta all'errata classificazione di elementi di classe "N" come elementi di classe "O"): al crescere del peso aumentavano sia il numero di istanze classificate correttamente come classe "O", sia quelle appartenenti alla classe "O" assegnate a "N".
-  Questa tendenza è assolutamente in linea con il principio di funzionamento dei classificatori \texttt{Cost-Based}: un buon equilibrio si può trovare attorno a una penalità di valore circa 20, che garantisce \texttt{R.O.C} massima(figura 19).
+  Questa tendenza è assolutamente in linea con il principio di funzionamento dei classificatori \texttt{Cost-Based}: un buon equilibrio si può trovare attorno a una penalità di valore circa 20, che garantisce \texttt{R.O.C} massimo(figura 19).
   
   \begin{figure}[H]
   	\includegraphics[scale=0.6]{CostBased20J48.png}
@@ -329,7 +329,17 @@ I buoni risultati ottenuti da questo classificatori sono dovuti all'applicazione
 
   \subsubsection{Approccio Boosting}
 Ultimo approccio in assoluto che ho tentato è stato il boosting, processo che si basa sulla costruzione di più classificatori attribuendo ogni volta un peso maggiore agli elementi mal classificati al passo precedente.
-Come per i classificatori cost-based, anche qui è possibile specificare un modello di base per costruire la classificazione e sempre analogamente ho testato tutti e tre i classificatori base impiegati ai passi precedenti(\texttt{NaiveBayes, J48} e \texttt{IBK})  
+Come per i classificatori cost-based, anche qui è possibile specificare un modello di base per costruire la classificazione e sempre analogamente ho testato tutti e tre i classificatori base impiegati ai passi precedenti(\texttt{NaiveBayes, J48} e  \texttt{IBK}), ottenendo i risultati migliori con \texttt{IBK}, in linea con le performance dei modelli creati precedentemente.
+In figura 21 sono riportati i risultati ottenuti con \texttt{IBK} come classificatore di base, k = 5, distanza euclidea e un numero di iterazioni pari a 10  
+
+\begin{figure}[H]
+	\includegraphics[scale=0.6]{AdaBoostIBK5.png}
+	\caption{Output del modello \texttt{Adaboost} basato dsu \texttt{IBK} con k = 5}
+\end{figure} 
+
+I risultati di questo modello sono decisamente i migliori in assoluto per la maggior parte dei criteri di misurazione utilizzati per confrontare la bontà dei differenti modelli: \texttt{Precision} e \texttt{Recall} sulla classe "O" risultano discrete senza intaccare gli alti valori per "N", mentre il valore di \texttt{R.O.C} è il più alto fra tutti i modelli creati fin d'ora, alla luce di ciò posso affermare che questo modello sia probabilmente il migliore tra quelli disponibili per il dataset analizzato.
+
   \section{Conclusioni}
   
+  Il dataset "Fertility" è stato sicuramente molto interessante e altrettanto complicato da analizzare; partendo da risultati non ottimali, ho dovuto interrogarmi parecchio sulla struttura stessa del dataset e del funzionamento dei classificatori che di volta in volta applicavo ai dati, giungendo da alcune conclusioni: In primo luogo ho compreso che alla prova dei fatti, i modelli basati sui classificatori \texttt{Lazy} producevano risultati più solidi, sebbene ancora lontani da potersi definire efficenti, rispetto a \texttt{Decision Tree} o classificatori \texttt{Bayesiani}; la ragione di tale solidità può essere attribuita alla maggiore resistenza del classificatore \texttt{IBK} a uno sbilanciamento della frequenza delle classi nel dataset rispetto agli altri modelli impiegati. In secondo luogo ho avuto modo di sperimentare una maggiore efficienza dei \texttt{MultiClassificatori} rispetto agli altri modelli, in particolare i due migliori modelli \texttt{Boosting} e \texttt{Cost-Sensitive} ottenevano rispettivamente i migliori risultati globali e di classificazione delle istanze della classe "O", tra i due non sono dell'opinione che non si abbia un modello migliore dell'altro, ma tutto dipenda dal contesto in cui vengono applicati questi classificatori: se ad esempio l'obbiettivo della classificazione è identificare il maggior numero di potenziali pazienti con problemi di sterilità possibili, anche a costo di etichettare qualche paziente sano come problematico, allora conviene utilizzare il modello \texttt{Cost-Based}; al contrario se l'interesse primario è avere un sistema che sia il più vicino possibile alla realtà modellata dai dati, allora il modello basato su \texttt{Adaboost} è la miglior scelta possibile.
 \end{document}
