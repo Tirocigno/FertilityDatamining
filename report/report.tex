@@ -129,7 +129,7 @@
   	
   	\item \texttt{Alchoolic}:Rappresenta la frequenza del consumo di alcool, diviso in cinque categorie(corrispondenti a 5 valori tra 0.2(Più volte al giorno), 0.4(Una volta al giorno), 0.6(Più volte alla settimana), 0.8(una volta a settimana), 1(molto raramente o mai)).
   	
-  	\item \texttt{Smoking}:Le abitudini del soggetto rispetto al fumo: fumatore abituale(-1), sporadico(0), non fumatore(1)
+  	\item \texttt{Smoking}:Le abitudini del soggetto rispetto al fumo: non fumatore(-1), sporadico(0), abituale(1)
   	
   	\item \texttt{Sitting}:Quantifica le ore trascorse sedute al giorno dal soggetto in un range compreso tra una (valore corrispondente 0.06) e 16 (valore corrispondente 1).
   	
@@ -230,7 +230,7 @@ Dopo aver analizzato i singoli attributi, ho proseguito osservando i grafici di 
   
   
   \subsection{Decision Tree}
-  La prima tecnica di classificazione che ho testato è stata il \texttt{Decision Tree}, in particolare ho scelto di usare l'implementazione \texttt{J-48}, che realizza un albero binario a possono essere applicate tecniche di \texttt{Post pruning} per ridurre le dimensioni dell'albero e l'errore commesso dal classificatore.\\
+  La prima tecnica di classificazione che ho testato è stata il \texttt{Decision Tree}, in particolare ho scelto di usare l'implementazione \texttt{J-48}, che realizza un albero a cui possono essere applicate tecniche di \texttt{Post pruning} per ridurre le dimensioni dell'albero e l'errore commesso dal classificatore.\\
   In primo luogo ho provato a generare un modello applicando i parametri standard impostati dall'editor Weka, ottenendo così i risultati riportati in figura 11
   
   \begin{figure}[H]
